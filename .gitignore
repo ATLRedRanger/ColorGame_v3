@@ -1,8 +1,11 @@
 # Ignore everything
 *
 
+# Don't ignore the .gitignore file
+!.gitignore
+
 # Don't ignore the 'src' folder
 !/Assets/
 
-# Don't ignore the .gitignore file
-!.gitignore
+# Don't ignore the contents of "Assets"
+!/Assets/**/*

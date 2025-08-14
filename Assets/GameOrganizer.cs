@@ -40,6 +40,7 @@ public class GameOrganizer : MonoBehaviour
     //Events
     public static event Action onNameSet;
     public static event Action<Unit_Player> onPlayerTurn;
+    public static event Action onPlayerTurnEnd;
     public static event Action onHealthUpdate;
     public static event Action onColorUpdate;
     //public static event Action onCombatStart;
@@ -95,12 +96,10 @@ public class GameOrganizer : MonoBehaviour
                 if (enemyCount == 0)
                 {
                     enemyA = enemy;
-                    Debug.Log($"EnemyA: {enemyA.unitAttributes.unitName}");
                 }
                 else if (enemyCount == 1)
                 {
                     enemyB = enemy;
-                    Debug.Log($"EnemyB: {enemyB.unitAttributes.unitName}");
                 }
                 enemyCount++;
             }
@@ -109,12 +108,10 @@ public class GameOrganizer : MonoBehaviour
                 if (playerCount == 0)
                 {
                     playerA = player;
-                    Debug.Log($"PlayerA: {playerA.unitAttributes.unitName}");
                 }
                 else if (playerCount == 1)
                 {
                     playerB = player;
-                    Debug.Log($"PlayerB: {playerB.unitAttributes.unitName}");
                 }
                 playerCount++;
             }
@@ -319,7 +316,8 @@ public class GameOrganizer : MonoBehaviour
                         {
                             Debug.Log("Player is Defending");
                         }
-                        
+
+                        PlayerTurnEnd();
                     }
                     //Else EnemyTurn(Unit)
                     else
@@ -328,7 +326,7 @@ public class GameOrganizer : MonoBehaviour
                         Debug.Log($"It's Enemy: {unit.unitAttributes.unitName}'s turn!");
                     }
                 }
-                TurnEnd();
+                
             }
 
             yield return new WaitForSeconds (1f);
@@ -339,6 +337,8 @@ public class GameOrganizer : MonoBehaviour
                 combatState = CombatState.Lost;
             }
 
+            AddColorToENV(round, 3);
+            TurnEnd();
             //Check Units health
             //If Unit is dead, remove from combatants
             //Check Combatants
@@ -384,6 +384,11 @@ public class GameOrganizer : MonoBehaviour
 
     }
 
+    private void PlayerTurnEnd()
+    {
+        onPlayerTurnEnd?.Invoke();
+    }
+
     public bool isAttackUseable(Attack attack)
     {
         if (envColros[attack.attackColor] >= attack.attackCost)
@@ -397,6 +402,18 @@ public class GameOrganizer : MonoBehaviour
     {
         envColros[color] -= amount;
         onColorUpdate?.Invoke();
+    }
+
+    private void AddColorToENV(int round, int amount)
+    {
+        if(round % 3 == 0)
+        {
+            envColros[Hue.Red] += amount;
+            envColros[Hue.Green] += amount;
+            envColros[Hue.Blue] += amount;
+        }
+
+        
     }
 
 }

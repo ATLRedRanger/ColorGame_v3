@@ -43,25 +43,49 @@ public class LocationNode : MonoBehaviour
     public void AddRed(int amount)
     {
         currentLocationColors.currentRed += amount;
+        if(currentLocationColors.currentRed > currentLocationColors.maxRed)
+        {
+            currentLocationColors.currentRed = currentLocationColors.maxRed;
+        }
     }
     public void LoseRed(int amount)
     {
         currentLocationColors.currentRed -= amount;
+        if (currentLocationColors.currentRed < 0)
+        {
+            currentLocationColors.currentRed = 0;
+        }
     }
     public void AddGreen(int amount)
     {
         currentLocationColors.currentGreen += amount;
+        if (currentLocationColors.currentGreen > currentLocationColors.maxGreen)
+        {
+            currentLocationColors.currentGreen = currentLocationColors.maxGreen;
+        }
     }
     public void LoseGreen(int amount)
     {
         currentLocationColors.currentGreen -= amount;
+        if (currentLocationColors.currentGreen < 0)
+        {
+            currentLocationColors.currentGreen = 0;
+        }
     }
     public void AddBlue(int amount)
     {
         currentLocationColors.currentBlue += amount;
+        if (currentLocationColors.currentBlue > currentLocationColors.maxBlue)
+        {
+            currentLocationColors.currentBlue = currentLocationColors.maxBlue;
+        }
     }
     public void LoseBlue(int amount)
     {
         currentLocationColors.currentBlue -= amount;
+        if (currentLocationColors.currentBlue < 0)
+        {
+            currentLocationColors.currentBlue = 0;
+        }
     }
 }

@@ -21,7 +21,12 @@ public class Unit_Player : Unit
     public override void Start()
     {
         base.Start();
-        unitAttackList.Add("Red Attack");
+        if(unitAttributes.unitName == "Julie")
+        {
+            unitAttackList.Add("Red Attack");
+        }
+
+        unitAttackList.Add("Blue Attack");
 
     }
 

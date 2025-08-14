@@ -74,7 +74,7 @@ public class UI : MonoBehaviour
         GameOrganizer.onNameSet += DisplayEnemyButtonNames;
         GameOrganizer.onNameSet += DisplayCombatantsNames;
         GameOrganizer.onPlayerTurn += DisplayCombatPanels;
-        GameOrganizer.onPlayerTurn += AttackButtonsSetActive;
+        GameOrganizer.onPlayerTurn += AttackButtonsSetActive2;
         GameOrganizer.onHealthUpdate += DisplayCombatantsHealth;
         GameOrganizer.onColorUpdate += DisplayENVColors;
         Unit.onDamageTaken += DisplayDamageTaken;
@@ -86,7 +86,7 @@ public class UI : MonoBehaviour
         GameOrganizer.onNameSet -= DisplayEnemyButtonNames;
         GameOrganizer.onNameSet -= DisplayCombatantsNames;
         GameOrganizer.onPlayerTurn -= DisplayCombatPanels;
-        GameOrganizer.onPlayerTurn -= AttackButtonsSetActive;
+        GameOrganizer.onPlayerTurn -= AttackButtonsSetActive2;
         GameOrganizer.onHealthUpdate -= DisplayCombatantsHealth;
         GameOrganizer.onColorUpdate -= DisplayENVColors;
         Unit.onDamageTaken -= DisplayDamageTaken;
@@ -110,10 +110,26 @@ public class UI : MonoBehaviour
     {
         bool isActive = combatPanel.activeSelf;
 
+        if (abilitiesPanel.activeSelf)
+        {
+            abilitiesPanel.SetActive(false);
+        }
+
+        if (enemiesPanel.activeSelf)
+        {
+            enemiesPanel.SetActive(false);
+        }
+
+        if (spellsPanel.activeSelf)
+        {
+            spellsPanel.SetActive(false);
+        }
+
         if (combatPanel != null)
         {
             combatPanel.SetActive(!isActive);
         }
+        
         
     }
 
@@ -296,13 +312,46 @@ public class UI : MonoBehaviour
     {
         foreach(var kvp in attackButtons)
         {
+            kvp.Value.SetActive(false);
             kvp.Value.gameObject.GetComponent<Button>().interactable = false;
             foreach(string attack in unit.unitAttackList)
             {
-                if (kvp.Key == attack && go.isAttackUseable(attackDB.attackDictionary[attack]))
+                if (kvp.Key == attack)
                 {
-                    kvp.Value.gameObject.GetComponent<Button>().interactable = true;
+                    kvp.Value.SetActive(true);
+                    if (go.isAttackUseable(attackDB.attackDictionary[attack]))
+                    {
+                        kvp.Value.gameObject.GetComponent<Button>().interactable = true;
+                    }
+                    
                 }
+            }
+        }
+    }
+
+    private void AttackButtonsSetActive2(Unit_Player unit)
+    {
+        // Create a HashSet for faster lookups of attacks
+        var availableAttacks = new HashSet<string>(unit.unitAttackList);
+
+        foreach (var kvp in attackButtons)
+        {
+            string attackName = kvp.Key;
+            GameObject attackButtonObject = kvp.Value;
+            Button attackButton = attackButtonObject.GetComponent<Button>();
+
+            // Check if the current button's attack exists in the player's attack list
+            bool isAttackAvailable = availableAttacks.Contains(attackName);
+
+            // Always set the button's active state based on availability
+            attackButtonObject.SetActive(isAttackAvailable);
+
+            // Only check for usability and set interactable if the button is available
+            if (isAttackAvailable)
+            {
+                // Assuming 'go' and 'attackDB' are accessible.
+                // Check if the attack is useable and set the button's interactable state.
+                attackButton.interactable = go.isAttackUseable(attackDB.attackDictionary[attackName]);
             }
         }
     }

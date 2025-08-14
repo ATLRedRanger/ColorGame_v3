@@ -34,6 +34,10 @@ public class Tester : MonoBehaviour
 
     public void TestButton()
     {
+        go.envColros[Hue.Red] = 10;
+        go.envColros[Hue.Green] = 10;
+        go.envColros[Hue.Blue] = 10;
+
         StartCoroutine(go.Combat());
     }
     

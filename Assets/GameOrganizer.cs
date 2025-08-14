@@ -22,7 +22,7 @@ public class GameOrganizer : MonoBehaviour
     [SerializeField]
     private Transform[] playerPositions;
 
-    private Unit_Player activePlayerUnit;
+    public Unit_Player activePlayerUnit;
 
     public Unit enemyA { get; private set; } = null;
     public Unit enemyB { get; private set; } = null;
@@ -39,9 +39,15 @@ public class GameOrganizer : MonoBehaviour
 
     //Events
     public static event Action onNameSet;
-    public static event Action<string> onPlayerTurn;
+    public static event Action<Unit_Player> onPlayerTurn;
     public static event Action onHealthUpdate;
+    public static event Action onColorUpdate;
     //public static event Action onCombatStart;
+
+    //Environment Stuff
+    public Dictionary<Hue, int> envColros = new Dictionary<Hue, int>();
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -278,13 +284,13 @@ public class GameOrganizer : MonoBehaviour
                     //If the Unit is PC, PlayerTurn(Unit)
                     if (unit is Unit_Player)
                     {
-                        PlayerTurn(unit.unitAttributes.unitName);
+                        PlayerTurn((Unit_Player)unit);
                         Debug.Log($"It's Player: {unit.unitAttributes.unitName}'s turn!");
                         activePlayerUnit = (Unit_Player)unit;
                         playerChoice = PlayerChoice.Deciding;
                         //Wait until the player's choice is made
                         yield return new WaitUntil(PlayerChoiceIsMade);
-                        PlayerTurn(unit.unitAttributes.unitName);
+                        PlayerTurn((Unit_Player)unit);
                         if (playerChoice == PlayerChoice.Attacking)
                         {
                             Attack attack = attackDB.attackDictionary[chosenAttack];
@@ -307,6 +313,7 @@ public class GameOrganizer : MonoBehaviour
                                     Target_Single(attack, TargetConversion(chosenTarget));
                                     break;
                             }
+                            SubtractColorFromENV(attack.attackColor, attack.attackCost);
                         }
                         if (playerChoice == PlayerChoice.Defending)
                         {
@@ -357,12 +364,13 @@ public class GameOrganizer : MonoBehaviour
 
     private void TurnBegin()
     {
-
+        onColorUpdate?.Invoke();
     }
 
     private void TurnEnd()
     {
         CombatHealthUpdate();
+        onColorUpdate?.Invoke();
     }
 
     private void CombatHealthUpdate()
@@ -370,8 +378,25 @@ public class GameOrganizer : MonoBehaviour
         onHealthUpdate?.Invoke();
     }
 
-    private void PlayerTurn(string unitName)
+    private void PlayerTurn(Unit_Player unit)
     {
-        onPlayerTurn?.Invoke(unitName);
+        onPlayerTurn?.Invoke(unit);
+
     }
+
+    public bool isAttackUseable(Attack attack)
+    {
+        if (envColros[attack.attackColor] >= attack.attackCost)
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    private void SubtractColorFromENV(Hue color, int amount)
+    {
+        envColros[color] -= amount;
+        onColorUpdate?.Invoke();
+    }
+
 }

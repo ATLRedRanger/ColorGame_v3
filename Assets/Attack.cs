@@ -5,7 +5,7 @@ using UnityEngine;
 public class Attack
 {
     public string attackName;
-    public Hue atttackColor;
+    public Hue attackColor;
     public WeaponType attackWeaponRequirement;
     public int attackCost;
     public int attackAccuracy;
@@ -18,10 +18,10 @@ public class Attack
     public int requiredColorLevel;
     public int requiredWeaponLevel;
 
-    public Attack(string attackName, Hue atttackColor, WeaponType attackWeaponRequirement, int attackCost, int attackAccuracy, int attackPower, int healAmount, int requiredColorLevel, int requiredWeaponLevel, AttackTarget attackTarget)
+    public Attack(string attackName, Hue attackColor, WeaponType attackWeaponRequirement, int attackCost, int attackAccuracy, int attackPower, int healAmount, int requiredColorLevel, int requiredWeaponLevel, AttackTarget attackTarget)
     {
         this.attackName = attackName;
-        this.atttackColor = atttackColor;
+        this.attackColor = attackColor;
         this.attackWeaponRequirement = attackWeaponRequirement;
         this.attackCost = attackCost;
         this.attackAccuracy = attackAccuracy;

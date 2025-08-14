@@ -1,12 +1,20 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
+    //Attack Buttons
+    public GameObject redAttack_Button;
+    public GameObject greenAttack_Button;
+    public GameObject blueAttack_Button;
+
+    private Dictionary<string, GameObject> attackButtons = new Dictionary<string, GameObject>();
 
     private GameOrganizer go;
     private AttackDatabase attackDB;
@@ -20,6 +28,10 @@ public class UI : MonoBehaviour
     public TMP_Text UI_PlayerA_Health;
     public GameObject UI_PlayerB;
     public TMP_Text UI_PlayerB_Health;
+
+    public TMP_Text envRed;
+    public TMP_Text envGreen;
+    public TMP_Text envBlue;
 
 
 
@@ -52,6 +64,9 @@ public class UI : MonoBehaviour
     {
         go = FindObjectOfType<GameOrganizer>();
         attackDB = FindObjectOfType<AttackDatabase>();
+        attackButtons["Red Attack"] = redAttack_Button;
+        attackButtons["Green Attack"] = greenAttack_Button;
+        attackButtons["Blue Attack"] = blueAttack_Button;
     }
 
     private void OnEnable()
@@ -59,7 +74,9 @@ public class UI : MonoBehaviour
         GameOrganizer.onNameSet += DisplayEnemyButtonNames;
         GameOrganizer.onNameSet += DisplayCombatantsNames;
         GameOrganizer.onPlayerTurn += DisplayCombatPanels;
+        GameOrganizer.onPlayerTurn += AttackButtonsSetActive;
         GameOrganizer.onHealthUpdate += DisplayCombatantsHealth;
+        GameOrganizer.onColorUpdate += DisplayENVColors;
         Unit.onDamageTaken += DisplayDamageTaken;
         Unit.onHealthGained += DisplayHealthGained;
     }
@@ -69,7 +86,9 @@ public class UI : MonoBehaviour
         GameOrganizer.onNameSet -= DisplayEnemyButtonNames;
         GameOrganizer.onNameSet -= DisplayCombatantsNames;
         GameOrganizer.onPlayerTurn -= DisplayCombatPanels;
+        GameOrganizer.onPlayerTurn -= AttackButtonsSetActive;
         GameOrganizer.onHealthUpdate -= DisplayCombatantsHealth;
+        GameOrganizer.onColorUpdate -= DisplayENVColors;
         Unit.onDamageTaken -= DisplayDamageTaken;
         Unit.onHealthGained -= DisplayHealthGained;
     }
@@ -81,10 +100,10 @@ public class UI : MonoBehaviour
         
     }
 
-    private void DisplayCombatPanels(string unitName)
+    private void DisplayCombatPanels(Unit_Player unit)
     {
         ToggleCombatPanel();
-        combatPanelUnitName.text = unitName;
+        combatPanelUnitName.text = unit.unitAttributes.unitName;
     }
 
     public void ToggleCombatPanel()
@@ -224,13 +243,14 @@ public class UI : MonoBehaviour
     public void OnDefendButtonClick()
     {
         onDefendSelected?.Invoke();
-        //ToggleCombatPanel();
     }
 
-
-
-
-
+    private void DisplayENVColors()
+    {
+        envRed.text = "RED: " + go.envColros[Hue.Red] + "/" + 10;
+        envGreen.text = "GREEN: " + go.envColros[Hue.Green] + "/" + 10;
+        envBlue.text = "BLUE: " + go.envColros[Hue.Blue] + "/" + 10;
+    }
 
     private void DisplayCombatantsHealth()
     {
@@ -269,6 +289,21 @@ public class UI : MonoBehaviour
         if (go.playerB != null)
         {
             UI_PlayerB.GetComponentInChildren<TMP_Text>().text = go.playerB.unitAttributes.unitName;
+        }
+    }
+
+    private void AttackButtonsSetActive(Unit_Player unit)
+    {
+        foreach(var kvp in attackButtons)
+        {
+            kvp.Value.gameObject.GetComponent<Button>().interactable = false;
+            foreach(string attack in unit.unitAttackList)
+            {
+                if (kvp.Key == attack && go.isAttackUseable(attackDB.attackDictionary[attack]))
+                {
+                    kvp.Value.gameObject.GetComponent<Button>().interactable = true;
+                }
+            }
         }
     }
 

@@ -18,6 +18,13 @@ public class Unit_Player : Unit
         base.Awake();
     }
 
+    public override void Start()
+    {
+        base.Start();
+        unitAttackList.Add("Red Attack");
+
+    }
+
     // Update is called once per frame
     void Update()
     {

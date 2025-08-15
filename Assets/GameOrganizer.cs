@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -174,48 +175,113 @@ public class GameOrganizer : MonoBehaviour
         return null;
     }
 
-    private void AttackToTarget(Attack attack, Unit target)
+    private bool DoesAttackHit(Attack attack)
     {
-        int damageAmount = attack.attackPower;
+        int roll = UnityEngine.Random.Range(1, 101);
+        Debug.Log($"Roll: {roll}, Attack Accuracy: {attack.attackAccuracy}");
+
+        if(roll <= attack.attackAccuracy)
+        {
+            Debug.Log($"The {attack.attackName} hits!");
+            return true;
+        }
+
+        Debug.Log($"The {attack.attackName} misses!");
+        return false;
+    }
+
+    private int GetAttackDamage(Attack attack, Unit attacker)
+    {
+        int damage = 0;
+
+
+        if (attack.attackPower != 0)
+        {
+            damage = attack.attackPower + attacker.unitAttributes.attack;
+        }
+
+        Debug.Log($"Damage = Attack Power: {attack.attackPower} + Unit's Attack: {attacker.unitAttributes.attack}");
+
+
+        if(attacker is Unit_Player)
+        {
+            var playerUnit = (Unit_Player)attacker;
+            switch(attack.attackColor)
+            {
+                case Hue.Red:
+                    Debug.Log($"This Red Attack's Damage = Damage: {damage} + Player's Red Level: ({playerUnit.redLevel} * .5)");
+                    damage = damage + (int)(playerUnit.redLevel * .5); 
+                    break;
+            }
+        }
+
+        Debug.Log($"Returned Damage: {damage}");
+        return damage;
+
+    }
+
+    private int GetHealAmount(Attack attack, Unit attacker)
+    {
         int healAmount = attack.healAmount;
+        Debug.Log($"Heal Amount = Heal Amount: {attack.healAmount} + Unit's Attack: {attacker.unitAttributes.attack}");
+
+
+        if (attacker is Unit_Player)
+        {
+            var playerUnit = (Unit_Player)attacker;
+            switch (attack.attackColor)
+            {
+                case Hue.Red:
+                    Debug.Log($"This Red Attack's Heal Amount = Heal Amount: {healAmount} + Player's Red Level: ({playerUnit.redLevel} * .5)");
+                    healAmount = healAmount + (int)(playerUnit.redLevel * .5);
+                    break;
+            }
+        }
+
+        Debug.Log($"Returned Heal Amount: {healAmount}");
+        return healAmount;
+    }
+
+    private void AttackToTarget(int damageAmount, int healAmount, Unit target)
+    {
 
         if (target != null)
         {
-            if (attack.healAmount != 0)
+            if (healAmount != 0)
             {
                 target.GainHealth(target.unitAttributes.unitName, healAmount);
             }
 
-            if (attack.attackPower != 0)
+            if (damageAmount != 0)
             {
                 target.LoseHealth(target.unitAttributes.unitName, damageAmount);
             }
         }
     }
 
-    public void Target_Single(Attack attack, Unit targetedUnit)
+    public void Target_Single(int damageAmount, int healAmount, Unit targetedUnit)
     {
-        AttackToTarget(attack, targetedUnit);
+        AttackToTarget(damageAmount, healAmount, targetedUnit);
     }
 
-    public void Target_All(Attack attack)
+    public void Target_All(int damageAmount, int healAmount)
     {
-        AttackToTarget(attack, enemyA);
-        AttackToTarget(attack, enemyB);
-        AttackToTarget(attack, playerA);
-        AttackToTarget(attack, playerB);
+        AttackToTarget(damageAmount, healAmount, enemyA);
+        AttackToTarget(damageAmount, healAmount, enemyB);
+        AttackToTarget(damageAmount, healAmount, playerA);
+        AttackToTarget(damageAmount, healAmount, playerB);
     }
 
-    public void Target_Enemies(Attack attack)
+    public void Target_Enemies(int damageAmount, int healAmount)
     {
-        AttackToTarget(attack, enemyA);
-        AttackToTarget(attack, enemyB);
+        AttackToTarget(damageAmount, healAmount, enemyA);
+        AttackToTarget(damageAmount, healAmount, enemyB);
     }
 
-    public void Target_Players(Attack attack)
+    public void Target_Players(int damageAmount, int healAmount)
     {
-        AttackToTarget(attack, playerA);
-        AttackToTarget(attack, playerB);
+        AttackToTarget(damageAmount, healAmount, playerA);
+        AttackToTarget(damageAmount, healAmount, playerB);
     }
 
     private void AttackTargetSelected(string target)
@@ -268,7 +334,7 @@ public class GameOrganizer : MonoBehaviour
         {
             //Sort the Units that are battling
             SortCombatants();
-            TurnBegin();
+            RoundBegin();
             round++;
             Debug.Log($"Round: {round}");
             //Go through each Unit
@@ -292,23 +358,29 @@ public class GameOrganizer : MonoBehaviour
                         {
                             Attack attack = attackDB.attackDictionary[chosenAttack];
                             yield return new WaitForSeconds(1f);
-                            switch (attack.attackTarget)
+                            if (DoesAttackHit(attack))
                             {
-                                case AttackTarget.All:
-                                    Target_All(attack);
-                                    break;
-                                case AttackTarget.All_Enemies:
-                                    Target_Enemies(attack);
-                                    break;
-                                case AttackTarget.All_Players:
-                                    Target_Players(attack);
-                                    break;
-                                case AttackTarget.Single_Opp:
-                                    Target_Single(attack, TargetConversion(chosenTarget));
-                                    break;
-                                case AttackTarget.Single_Ally:
-                                    Target_Single(attack, TargetConversion(chosenTarget));
-                                    break;
+                                int damage = GetAttackDamage(attack, unit);
+                                int healAmount = GetHealAmount(attack, unit);
+                                switch (attack.attackTarget)
+                                {
+                                    case AttackTarget.All:
+                                        Target_All(damage, healAmount);
+                                        break;
+                                    case AttackTarget.All_Enemies:
+                                        Target_Enemies(damage, healAmount);
+                                        break;
+                                    case AttackTarget.All_Players:
+                                        Target_Players(damage, healAmount);
+                                        break;
+                                    case AttackTarget.Single_Opp:
+                                        Target_Single(damage, healAmount, TargetConversion(chosenTarget));
+                                        break;
+                                    case AttackTarget.Single_Ally:
+                                        Target_Single(damage, healAmount, TargetConversion(chosenTarget));
+                                        break;
+                                }
+                                
                             }
                             SubtractColorFromENV(attack.attackColor, attack.attackCost);
                         }
@@ -323,8 +395,11 @@ public class GameOrganizer : MonoBehaviour
                     else
                     {
                         yield return new WaitForSeconds (1f);
+                        EnemyTurnEnd();
                         Debug.Log($"It's Enemy: {unit.unitAttributes.unitName}'s turn!");
                     }
+
+                    CombatHealthUpdate();
                 }
                 
             }
@@ -338,7 +413,7 @@ public class GameOrganizer : MonoBehaviour
             }
 
             AddColorToENV(round, 3);
-            TurnEnd();
+            RoundEnd();
             //Check Units health
             //If Unit is dead, remove from combatants
             //Check Combatants
@@ -362,12 +437,12 @@ public class GameOrganizer : MonoBehaviour
 
     }
 
-    private void TurnBegin()
+    private void RoundBegin()
     {
         onColorUpdate?.Invoke();
     }
 
-    private void TurnEnd()
+    private void RoundEnd()
     {
         CombatHealthUpdate();
         onColorUpdate?.Invoke();
@@ -386,7 +461,13 @@ public class GameOrganizer : MonoBehaviour
 
     private void PlayerTurnEnd()
     {
+        //CombatHealthUpdate();
         onPlayerTurnEnd?.Invoke();
+    }
+
+    private void EnemyTurnEnd()
+    {
+        
     }
 
     public bool isAttackUseable(Attack attack)

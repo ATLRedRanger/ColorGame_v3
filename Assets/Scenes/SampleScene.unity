@@ -5501,7 +5501,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -214.01215, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5691,9 +5691,9 @@ MonoBehaviour:
   UI_PlayerA_Health: {fileID: 833852879}
   UI_PlayerB: {fileID: 1786728438}
   UI_PlayerB_Health: {fileID: 1670277105}
-  envRed: {fileID: 0}
-  envGreen: {fileID: 0}
-  envBlue: {fileID: 0}
+  envRed: {fileID: 985052847}
+  envGreen: {fileID: 1364670352}
+  envBlue: {fileID: 1660685718}
   combatPanel: {fileID: 946918991}
   spellsPanel: {fileID: 117314185}
   abilitiesPanel: {fileID: 542439829}
@@ -6654,7 +6654,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -214.01215, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

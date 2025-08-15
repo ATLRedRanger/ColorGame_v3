@@ -16,6 +16,8 @@ public class Unit_Player : Unit
     public override void Awake()
     {
         base.Awake();
+
+        
     }
 
     public override void Start()

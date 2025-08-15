@@ -11,6 +11,7 @@ public class Attack
     public int attackAccuracy;
     public int attackPower;
     public int healAmount;
+    public int numHits;
     public AttackTarget attackTarget;
 
 
@@ -18,7 +19,7 @@ public class Attack
     public int requiredColorLevel;
     public int requiredWeaponLevel;
 
-    public Attack(string attackName, Hue attackColor, WeaponType attackWeaponRequirement, int attackCost, int attackAccuracy, int attackPower, int healAmount, int requiredColorLevel, int requiredWeaponLevel, AttackTarget attackTarget)
+    public Attack(string attackName, Hue attackColor, WeaponType attackWeaponRequirement, int attackCost, int attackAccuracy, int attackPower, int healAmount, int numHits, int requiredColorLevel, int requiredWeaponLevel, AttackTarget attackTarget)
     {
         this.attackName = attackName;
         this.attackColor = attackColor;
@@ -27,6 +28,7 @@ public class Attack
         this.attackAccuracy = attackAccuracy;
         this.attackPower = attackPower;
         this.healAmount = healAmount;
+        this.numHits = numHits;
         this.requiredColorLevel = requiredColorLevel;
         this.requiredWeaponLevel = requiredWeaponLevel;
         this.attackTarget = attackTarget;

@@ -223,7 +223,7 @@ public class GameOrganizer : MonoBehaviour
     private int GetHealAmount(Attack attack, Unit attacker)
     {
         int healAmount = attack.healAmount;
-        Debug.Log($"Heal Amount = Heal Amount: {attack.healAmount} + Unit's Attack: {attacker.unitAttributes.attack}");
+        Debug.Log($"Heal Amount = Heal Amount: {attack.healAmount}");
 
 
         if (attacker is Unit_Player)
@@ -242,8 +242,33 @@ public class GameOrganizer : MonoBehaviour
         return healAmount;
     }
 
-    private void AttackToTarget(int damageAmount, int healAmount, Unit target)
+    private void AttackToTarget(Attack attack, int damageAmount, int healAmount, Unit target)
     {
+        //TODO: Figure out how to factor in the targets resistance when taking damage and gaining health
+        //Solution_1: Add in the attack to the function
+        //This seems to be the easiest solution
+
+        float resistance = 0;
+
+        switch (attack.attackColor)
+        {
+            case Hue.Red:
+                resistance += target.unitAttributes.redResistance;
+                break;
+            case Hue.Green:
+                resistance += target.unitAttributes.greenResistance;
+                break;
+            case Hue.Blue:
+                resistance += target.unitAttributes.blueResistance;
+                break;
+        }
+        Debug.Log($"Resistance: {resistance}");
+        Debug.Log($"DamageAmount: {damageAmount} - ({damageAmount * resistance})");
+        Debug.Log($"HealAmount: {healAmount} + ({healAmount * resistance})");
+
+        //Mathf.RoundToInt x >= .5 rounds up
+        damageAmount = damageAmount - Mathf.RoundToInt(damageAmount * resistance);
+        healAmount = healAmount + Mathf.RoundToInt(healAmount * resistance);
 
         if (target != null)
         {
@@ -259,29 +284,55 @@ public class GameOrganizer : MonoBehaviour
         }
     }
 
-    public void Target_Single(int damageAmount, int healAmount, Unit targetedUnit)
+    public void Target_Single(Attack attack, int damageAmount, int healAmount, Unit targetedUnit)
     {
-        AttackToTarget(damageAmount, healAmount, targetedUnit);
+        AttackToTarget(attack, damageAmount, healAmount, targetedUnit);
     }
 
-    public void Target_All(int damageAmount, int healAmount)
+    public void Target_All(Attack attack, int damageAmount, int healAmount)
     {
-        AttackToTarget(damageAmount, healAmount, enemyA);
-        AttackToTarget(damageAmount, healAmount, enemyB);
-        AttackToTarget(damageAmount, healAmount, playerA);
-        AttackToTarget(damageAmount, healAmount, playerB);
+        foreach(Unit unit in combatants)
+        {
+            if(unit != null)
+            {
+                AttackToTarget(attack, damageAmount, healAmount, unit);
+            }
+        }
+        /*
+        AttackToTarget(attack, damageAmount, healAmount, enemyB);
+        AttackToTarget(attack, damageAmount, healAmount, playerA);
+        AttackToTarget(attack, damageAmount, healAmount, playerB);
+        */
     }
 
-    public void Target_Enemies(int damageAmount, int healAmount)
+    public void Target_Enemies(Attack attack, int damageAmount, int healAmount)
     {
-        AttackToTarget(damageAmount, healAmount, enemyA);
-        AttackToTarget(damageAmount, healAmount, enemyB);
+        foreach(Unit unit in combatants)
+        {
+            if(unit != null && unit is Unit_Enemy)
+            {
+                AttackToTarget(attack, damageAmount, healAmount, unit);
+            }
+        }
+        /*
+        AttackToTarget(attack, damageAmount, healAmount, enemyA);
+        AttackToTarget(attack, damageAmount, healAmount, enemyB);
+        */
     }
 
-    public void Target_Players(int damageAmount, int healAmount)
+    public void Target_Players(Attack attack, int damageAmount, int healAmount)
     {
-        AttackToTarget(damageAmount, healAmount, playerA);
-        AttackToTarget(damageAmount, healAmount, playerB);
+        foreach (Unit unit in combatants)
+        {
+            if (unit != null && unit is Unit_Player)
+            {
+                AttackToTarget(attack, damageAmount, healAmount, unit);
+            }
+        }
+        /*
+        AttackToTarget(attack, damageAmount, healAmount, playerA);
+        AttackToTarget(attack, damageAmount, healAmount, playerB);
+        */
     }
 
     private void AttackTargetSelected(string target)
@@ -365,19 +416,19 @@ public class GameOrganizer : MonoBehaviour
                                 switch (attack.attackTarget)
                                 {
                                     case AttackTarget.All:
-                                        Target_All(damage, healAmount);
+                                        Target_All(attack, damage, healAmount);
                                         break;
                                     case AttackTarget.All_Enemies:
-                                        Target_Enemies(damage, healAmount);
+                                        Target_Enemies(attack, damage, healAmount);
                                         break;
                                     case AttackTarget.All_Players:
-                                        Target_Players(damage, healAmount);
+                                        Target_Players(attack, damage, healAmount);
                                         break;
                                     case AttackTarget.Single_Opp:
-                                        Target_Single(damage, healAmount, TargetConversion(chosenTarget));
+                                        Target_Single(attack, damage, healAmount, TargetConversion(chosenTarget));
                                         break;
                                     case AttackTarget.Single_Ally:
-                                        Target_Single(damage, healAmount, TargetConversion(chosenTarget));
+                                        Target_Single(attack, damage, healAmount, TargetConversion(chosenTarget));
                                         break;
                                 }
                                 

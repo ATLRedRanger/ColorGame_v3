@@ -12,9 +12,9 @@ public class AttackDatabase : MonoBehaviour
     void Awake()
     {
                                 //attackName, atttackColor, attackWeaponRequirement, attackCost, attackAccuracy, attackPower, healAmount, numHits, requiredColorLevel, requiredWeaponLevel
-        attackDictionary["Red Attack"] = CreateAttack("Red Attack", Hue.Red, WeaponType.None, 1, 50, 5, 0, 3, 0, 0, AttackTarget.All);
+        attackDictionary["Red Attack"] = CreateAttack("Red Attack", Hue.Red, WeaponType.None, 1, 100, 5, 0, 3, 0, 0, AttackTarget.All);
         attackDictionary["Green Attack"] = CreateAttack("Green Attack", Hue.Green, WeaponType.None, 2, 100, 5, 0, 1, 0, 0, AttackTarget.All);
-        attackDictionary["Blue Attack"] = CreateAttack("Blue Attack", Hue.Blue, WeaponType.None, 2, 100, 0, 5, 1, 0, 0, AttackTarget.Single_Opp);
+        attackDictionary["Blue Attack"] = CreateAttack("Blue Attack", Hue.Blue, WeaponType.None, 2, 100, 0, 5, 1, 0, 0, AttackTarget.All_Players);
         attackDictionary["Basic Attack"] = CreateAttack("Basic Attack", Hue.White, WeaponType.None, 2, 100, 5, 0, 1, 0, 0, AttackTarget.Single_Opp);
     }
 

@@ -11,12 +11,12 @@ public struct UnitAttributes
     public int attack;
     public int speed;
     public int defense;
-    public float redDefensePercent;
-    public float greenDefensePercent;
-    public float blueDefensePercent;
-    public float axeDefensePercent;
-    public float hammerDefensePercent;
-    public float staffDefensePercent;
+    public float redResistance;
+    public float greenResistance;
+    public float blueResistance;
+    public float axeResistance;
+    public float hammerResistance;
+    public float staffResistance;
 }
 
 [Serializable]

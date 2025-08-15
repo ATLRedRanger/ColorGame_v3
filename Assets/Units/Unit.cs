@@ -22,7 +22,7 @@ public class Unit : MonoBehaviour
     public static event Action<string, int> onDamageTaken;
     public static event Action<string, int> onHealthGained;
 
-    public bool isDefending { get; private set; } = false;
+    public bool isDefending = false;
     public bool hadTurn = false;
 
     // Start is called before the first frame update

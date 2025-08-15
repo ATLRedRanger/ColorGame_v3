@@ -249,6 +249,7 @@ public class GameOrganizer : MonoBehaviour
         //This seems to be the easiest solution
 
         float resistance = 0;
+        int defendingDamage = 0;
 
         switch (attack.attackColor)
         {
@@ -266,12 +267,13 @@ public class GameOrganizer : MonoBehaviour
         Debug.Log($"DamageAmount: {damageAmount} - ({damageAmount * resistance})");
         Debug.Log($"HealAmount: {healAmount} + ({healAmount * resistance})");
 
-        //Mathf.RoundToInt x >= .5 rounds up
+        //Mathf.RoundToInt rounds to the nearest even number if .5
         damageAmount = damageAmount - Mathf.RoundToInt(damageAmount * resistance);
         healAmount = healAmount + Mathf.RoundToInt(healAmount * resistance);
-
+        
         if (target != null)
         {
+            
             if (healAmount != 0)
             {
                 target.GainHealth(target.unitAttributes.unitName, healAmount);
@@ -279,7 +281,18 @@ public class GameOrganizer : MonoBehaviour
 
             if (damageAmount != 0)
             {
-                target.LoseHealth(target.unitAttributes.unitName, damageAmount);
+                if (target.isDefending == true)
+                {
+                    //Debug.Log("CHERRY");
+                    defendingDamage = defendingDamage + Mathf.RoundToInt(damageAmount * .5f);
+                    target.LoseHealth(target.unitAttributes.unitName, defendingDamage);
+                }
+                else
+                {
+                    //Debug.Log("PEACH");
+                    target.LoseHealth(target.unitAttributes.unitName, damageAmount);
+                }
+                
             }
         }
     }
@@ -438,6 +451,8 @@ public class GameOrganizer : MonoBehaviour
                         if (playerChoice == PlayerChoice.Defending)
                         {
                             Debug.Log("Player is Defending");
+                            unit.SetDefendingTrue();
+
                         }
 
                         PlayerTurnEnd();
@@ -445,24 +460,31 @@ public class GameOrganizer : MonoBehaviour
                     //Else EnemyTurn(Unit)
                     else
                     {
-                        yield return new WaitForSeconds (1f);
-                        EnemyTurnEnd();
                         Debug.Log($"It's Enemy: {unit.unitAttributes.unitName}'s turn!");
+                        yield return new WaitForSeconds (1f);
+                        Target_Single(attackDB.attackDictionary["Red Attack"], attackDB.attackDictionary["Red Attack"].attackPower, attackDB.attackDictionary["Red Attack"].healAmount, playerA);
+                        EnemyTurnEnd();
+                        
                     }
 
                     CombatHealthUpdate();
                 }
-                
+
+                if (playerA.currentHealth == 0 && playerB.currentHealth == 0)
+                {
+                    Debug.Log("Game Over");
+                    combatState = CombatState.Lost;
+                    break;
+                }
+                else if (enemyA.currentHealth == 0 && enemyB.currentHealth == 0)
+                {
+                    Debug.Log("You've Won!");
+                    combatState = CombatState.Won;
+                    break;
+                }
             }
 
             yield return new WaitForSeconds (1f);
-
-            if(playerA.currentHealth == 0 && playerB.currentHealth == 0)
-            {
-                Debug.Log("Game Over");
-                combatState = CombatState.Lost;
-            }
-
             AddColorToENV(round, 3);
             RoundEnd();
             //Check Units health
@@ -495,6 +517,13 @@ public class GameOrganizer : MonoBehaviour
 
     private void RoundEnd()
     {
+        foreach(Unit unit in combatants)
+        {
+            if (unit.isDefending)
+            {
+                unit.SetDefendingFalse();
+            }
+        }
         CombatHealthUpdate();
         onColorUpdate?.Invoke();
     }

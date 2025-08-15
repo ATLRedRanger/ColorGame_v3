@@ -25,11 +25,11 @@ public class Unit_Player : Unit
         base.Start();
         if(unitAttributes.unitName == "Julie")
         {
-            unitAttackList.Add("Red Attack");
+            
         }
 
         unitAttackList.Add("Blue Attack");
-
+        unitAttackList.Add("Red Attack");
     }
 
     // Update is called once per frame

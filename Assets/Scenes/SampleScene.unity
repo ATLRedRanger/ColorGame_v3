@@ -561,13 +561,14 @@ MonoBehaviour:
     attack: 12
     speed: 12
     defense: 12
-    redDefensePercent: 0
-    greenDefensePercent: 0
-    blueDefensePercent: 0
-    axeDefensePercent: 0
-    hammerDefensePercent: 0
-    staffDefensePercent: 0
+    redResistance: 0
+    greenResistance: 0
+    blueResistance: 0
+    axeResistance: 0
+    hammerResistance: 0
+    staffResistance: 0
   currentHealth: 0
+  isDefending: 0
   hadTurn: 0
 --- !u!212 &101227436
 SpriteRenderer:
@@ -4304,13 +4305,14 @@ MonoBehaviour:
     attack: 2
     speed: 5
     defense: 2
-    redDefensePercent: 0
-    greenDefensePercent: 0
-    blueDefensePercent: 0
-    axeDefensePercent: 0
-    hammerDefensePercent: 0
-    staffDefensePercent: 0
+    redResistance: 0.5
+    greenResistance: 0
+    blueResistance: 0.5
+    axeResistance: 0
+    hammerResistance: 0
+    staffResistance: 0
   currentHealth: 0
+  isDefending: 0
   hadTurn: 0
 --- !u!4 &1185494464
 Transform:
@@ -4900,13 +4902,14 @@ MonoBehaviour:
     attack: 2
     speed: 8
     defense: 2
-    redDefensePercent: 0
-    greenDefensePercent: 0
-    blueDefensePercent: 0
-    axeDefensePercent: 0
-    hammerDefensePercent: 0
-    staffDefensePercent: 0
+    redResistance: 0.5
+    greenResistance: 0
+    blueResistance: 0.5
+    axeResistance: 0
+    hammerResistance: 0
+    staffResistance: 0
   currentHealth: 0
+  isDefending: 0
   hadTurn: 0
 --- !u!4 &1303660766
 Transform:
@@ -8367,15 +8370,16 @@ MonoBehaviour:
     unitName: Riley_Unit_Player
     maxHealth: 50
     attack: 5
-    speed: 3
+    speed: 12
     defense: 3
-    redDefensePercent: 0
-    greenDefensePercent: 0
-    blueDefensePercent: 0
-    axeDefensePercent: 0
-    hammerDefensePercent: 0
-    staffDefensePercent: 0
+    redResistance: 0
+    greenResistance: 0
+    blueResistance: 0
+    axeResistance: 0
+    hammerResistance: 0
+    staffResistance: 0
   currentHealth: 0
+  isDefending: 0
   hadTurn: 0
 --- !u!1 &1927111295
 GameObject:

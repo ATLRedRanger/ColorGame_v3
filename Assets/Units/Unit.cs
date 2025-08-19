@@ -16,7 +16,7 @@ public class Unit : MonoBehaviour
     public int currentHealth = 0;
 
     public List<string> unitAttackList { get; private set; } = new List<string>();
-
+    public HashSet<StatusEffect> unitStatusEffects { get; private set; } = new HashSet<StatusEffect> { };
 
     //Trying Events
     public static event Action<string, int> onDamageTaken;
@@ -82,4 +82,10 @@ public class Unit : MonoBehaviour
     {
         isDefending = false;
     }
+
+    public void AddStatus(StatusEffect status)
+    {
+        unitStatusEffects.Add(status);
+    }
+
 }

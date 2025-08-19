@@ -295,9 +295,9 @@ public class GameOrganizer : MonoBehaviour
                     target.LoseHealth(target.unitAttributes.unitName, damageAmount);
                 }
 
-                if (!target.unitStatusEffects.Contains(statusEffectDB.effects["Burn"]))
+                if (!target.unitStatusEffects.Contains(statusEffectDB.effects["Future Sight"]))
                 {
-                    target.AddStatus(statusEffectDB.effects["Burn"].DeepCopy());
+                    target.AddStatus(statusEffectDB.effects["Future Sight"].DeepCopy());
                 }
                 
             }
@@ -366,7 +366,7 @@ public class GameOrganizer : MonoBehaviour
             {
                 status.ApplyEffect(unit);
 
-                if (status.timeActive >= status.duration)
+                if (status.timeActive > status.duration)
                 {
                     effectsToRemove.Add(status);
                 }

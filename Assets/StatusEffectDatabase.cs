@@ -10,7 +10,8 @@ public class StatusEffectDatabase : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        effects["Burn"] = CreateStatus("Burn", 3, 0, 0);    
+        effects["Burn"] = CreateStatus("Burn", 3, 0, 0);
+        effects["Future Sight"] = CreateStatus("Future Sight", 3, 0, 0);
     }
 
     // Update is called once per frame

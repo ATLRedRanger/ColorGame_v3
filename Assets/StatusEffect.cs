@@ -36,21 +36,24 @@ public class StatusEffect
         int dmg = damage;
         Debug.Log($"Time Active: {timeActive}, Duration: {duration}");
         Debug.Log($"");
-        if (timeActive < duration)
+        switch (statusName)
         {
-            switch (this.statusName)
-            {
-                case "Burn":
+            case "Burn":
+                if(timeActive < duration)
+                {
                     dmg += Mathf.RoundToInt(unit.unitAttributes.maxHealth * .05f);
-                    Debug.Log($"Unit Max Health: {unit.unitAttributes.maxHealth}");
                     unit.LoseHealth(unit.unitAttributes.unitName, dmg);
-                    timeActive++;
-                    break;
-
-            }
+                }
+                break;
+            case "Future Sight":
+                if (timeActive >= duration)
+                {
+                    dmg += Mathf.RoundToInt(unit.unitAttributes.maxHealth * .20f);
+                    unit.LoseHealth(unit.unitAttributes.unitName, dmg);
+                }
+                break;
         }
-        
-         
-        
+
+        timeActive++;
     }
 }

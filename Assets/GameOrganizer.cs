@@ -11,6 +11,7 @@ public class GameOrganizer : MonoBehaviour
 {
 
     private AttackDatabase attackDB;
+    private StatusEffectDatabase statusEffectDB;
 
     public CombatState state;
     private PlayerChoice playerChoice;
@@ -55,6 +56,7 @@ public class GameOrganizer : MonoBehaviour
     void Start()
     {
         attackDB = FindObjectOfType<AttackDatabase>();
+        statusEffectDB = FindObjectOfType<StatusEffectDatabase>();
     }
 
     // Update is called once per frame
@@ -292,6 +294,11 @@ public class GameOrganizer : MonoBehaviour
                     //Debug.Log("PEACH");
                     target.LoseHealth(target.unitAttributes.unitName, damageAmount);
                 }
+
+                if (!target.unitStatusEffects.Contains(statusEffectDB.effects["Burn"]))
+                {
+                    target.AddStatus(statusEffectDB.effects["Burn"].DeepCopy());
+                }
                 
             }
         }
@@ -346,6 +353,28 @@ public class GameOrganizer : MonoBehaviour
         AttackToTarget(attack, damageAmount, healAmount, playerA);
         AttackToTarget(attack, damageAmount, healAmount, playerB);
         */
+    }
+
+    private void CheckUnitStatusEffects()
+    {
+        foreach (Unit unit in combatants)
+        {
+            // Create a temporary set to hold effects to remove
+            HashSet<StatusEffect> effectsToRemove = new HashSet<StatusEffect>();
+
+            foreach (StatusEffect status in unit.unitStatusEffects)
+            {
+                status.ApplyEffect(unit);
+
+                if (status.timeActive >= status.duration)
+                {
+                    effectsToRemove.Add(status);
+                }
+            }
+
+            // Remove the expired effects from the main set
+            unit.unitStatusEffects.ExceptWith(effectsToRemove);
+        }
     }
 
     private void AttackTargetSelected(string target)
@@ -462,13 +491,15 @@ public class GameOrganizer : MonoBehaviour
                     {
                         Debug.Log($"It's Enemy: {unit.unitAttributes.unitName}'s turn!");
                         yield return new WaitForSeconds (1f);
-                        Target_Single(attackDB.attackDictionary["Red Attack"], attackDB.attackDictionary["Red Attack"].attackPower, attackDB.attackDictionary["Red Attack"].healAmount, playerA);
+                        //Target_Single(attackDB.attackDictionary["Red Attack"], attackDB.attackDictionary["Red Attack"].attackPower, attackDB.attackDictionary["Red Attack"].healAmount, playerA);
                         EnemyTurnEnd();
                         
                     }
 
-                    CombatHealthUpdate();
+                    
                 }
+
+                CombatHealthUpdate();
 
                 if (playerA.currentHealth == 0 && playerB.currentHealth == 0)
                 {
@@ -485,6 +516,7 @@ public class GameOrganizer : MonoBehaviour
             }
 
             yield return new WaitForSeconds (1f);
+            CheckUnitStatusEffects();
             AddColorToENV(round, 3);
             RoundEnd();
             //Check Units health
@@ -497,6 +529,19 @@ public class GameOrganizer : MonoBehaviour
             {
                 combatState = CombatState.Won;
             }*/
+
+            if (playerA.currentHealth == 0 && playerB.currentHealth == 0)
+            {
+                Debug.Log("Game Over");
+                combatState = CombatState.Lost;
+                break;
+            }
+            else if (enemyA.currentHealth == 0 && enemyB.currentHealth == 0)
+            {
+                Debug.Log("You've Won!");
+                combatState = CombatState.Won;
+                break;
+            }
         }
 
     }
@@ -517,6 +562,7 @@ public class GameOrganizer : MonoBehaviour
 
     private void RoundEnd()
     {
+
         foreach(Unit unit in combatants)
         {
             if (unit.isDefending)

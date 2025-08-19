@@ -8,6 +8,7 @@ public class AttackDatabase : MonoBehaviour
 
     public Dictionary<string, Attack> attackDictionary = new Dictionary<string, Attack>();
 
+
     // Start is called before the first frame update
     void Awake()
     {

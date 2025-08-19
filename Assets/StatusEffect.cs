@@ -31,17 +31,26 @@ public class StatusEffect
         return status;
     }
 
-    public int GetDamage(Unit unit)
+    public void ApplyEffect(Unit unit)
     {
         int dmg = damage;
-        switch (this.statusName)
+        Debug.Log($"Time Active: {timeActive}, Duration: {duration}");
+        Debug.Log($"");
+        if (timeActive < duration)
         {
-            case "Burn":
-                dmg += Mathf.RoundToInt(unit.unitAttributes.maxHealth * (1 / 5));
-                break;
+            switch (this.statusName)
+            {
+                case "Burn":
+                    dmg += Mathf.RoundToInt(unit.unitAttributes.maxHealth * .05f);
+                    Debug.Log($"Unit Max Health: {unit.unitAttributes.maxHealth}");
+                    unit.LoseHealth(unit.unitAttributes.unitName, dmg);
+                    timeActive++;
+                    break;
 
+            }
         }
+        
          
-        return dmg;
+        
     }
 }

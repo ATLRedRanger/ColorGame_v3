@@ -56,4 +56,25 @@ public class StatusEffect
 
         timeActive++;
     }
+
+    //Override the Equals method to check for value equality
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        StatusEffect other = (StatusEffect)obj;
+
+        //Use a unique identifier, like a status ID or name, for comparison
+        return this.statusName == other.statusName;
+    }
+
+    //Override the GetHashCode method to match the Equals logic
+    public override int GetHashCode()
+    {
+        //Use the same property for hashing that you use for equality
+        return (this.statusName != null) ? this.statusName.GetHashCode() : 0;
+    }
 }

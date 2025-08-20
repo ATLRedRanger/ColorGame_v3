@@ -85,8 +85,16 @@ public class Unit : MonoBehaviour
 
     public void AddStatus(StatusEffect status)
     {
-        Debug.Log($"Adding Status: {status.statusName}");
-        unitStatusEffects.Add(status);
+        Debug.Log(unitStatusEffects.Count);
+        if (unitStatusEffects.Add(status))
+        {
+            Debug.Log($"Adding Status: {status.statusName}");
+        }
+        else
+        {
+            Debug.Log($"{unitAttributes.unitName} is already {status.statusName}(ed)");
+        }
+        Debug.Log(unitStatusEffects.Count);
     }
 
 }

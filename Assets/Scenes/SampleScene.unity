@@ -558,7 +558,7 @@ MonoBehaviour:
   _baseAttributes:
     unitName: Julie
     maxHealth: 50
-    attack: 12
+    attack: 1
     speed: 12
     defense: 12
     redResistance: 0
@@ -4464,6 +4464,50 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1205034986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1205034988}
+  - component: {fileID: 1205034987}
+  m_Layer: 0
+  m_Name: StatusDB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1205034987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205034986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2d52dd1f70ba14296ae535cb37ad9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1205034988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205034986}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.675739, y: 0.17716795, z: 23.090765}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1205888857
 GameObject:
   m_ObjectHideFlags: 0
@@ -8278,8 +8322,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1926760940}
-  - component: {fileID: 1926760941}
   - component: {fileID: 1926760938}
+  - component: {fileID: 1926760941}
   m_Layer: 0
   m_Name: Riley_Unit_Player
   m_TagString: Untagged
@@ -8369,7 +8413,7 @@ MonoBehaviour:
   _baseAttributes:
     unitName: Riley_Unit_Player
     maxHealth: 50
-    attack: 5
+    attack: 1
     speed: 12
     defense: 3
     redResistance: 0

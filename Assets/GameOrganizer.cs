@@ -180,7 +180,7 @@ public class GameOrganizer : MonoBehaviour
     private bool DoesAttackHit(Attack attack)
     {
         int roll = UnityEngine.Random.Range(1, 101);
-        Debug.Log($"Roll: {roll}, Attack Accuracy: {attack.attackAccuracy}");
+        //Debug.Log($"Roll: {roll}, Attack Accuracy: {attack.attackAccuracy}");
 
         if(roll <= attack.attackAccuracy)
         {
@@ -202,7 +202,7 @@ public class GameOrganizer : MonoBehaviour
             damage = attack.attackPower + attacker.unitAttributes.attack;
         }
 
-        Debug.Log($"Damage = Attack Power: {attack.attackPower} + Unit's Attack: {attacker.unitAttributes.attack}");
+        //Debug.Log($"Damage = Attack Power: {attack.attackPower} + Unit's Attack: {attacker.unitAttributes.attack}");
 
 
         if(attacker is Unit_Player)
@@ -217,7 +217,7 @@ public class GameOrganizer : MonoBehaviour
             }
         }
 
-        Debug.Log($"Returned Damage: {damage}");
+        //Debug.Log($"Returned Damage: {damage}");
         return damage;
 
     }
@@ -225,7 +225,7 @@ public class GameOrganizer : MonoBehaviour
     private int GetHealAmount(Attack attack, Unit attacker)
     {
         int healAmount = attack.healAmount;
-        Debug.Log($"Heal Amount = Heal Amount: {attack.healAmount}");
+        //Debug.Log($"Heal Amount = Heal Amount: {attack.healAmount}");
 
 
         if (attacker is Unit_Player)
@@ -265,9 +265,9 @@ public class GameOrganizer : MonoBehaviour
                 resistance += target.unitAttributes.blueResistance;
                 break;
         }
-        Debug.Log($"Resistance: {resistance}");
-        Debug.Log($"DamageAmount: {damageAmount} - ({damageAmount * resistance})");
-        Debug.Log($"HealAmount: {healAmount} + ({healAmount * resistance})");
+        //Debug.Log($"Resistance: {resistance}");
+        //Debug.Log($"DamageAmount: {damageAmount} - ({damageAmount * resistance})");
+        //Debug.Log($"HealAmount: {healAmount} + ({healAmount * resistance})");
 
         //Mathf.RoundToInt rounds to the nearest even number if .5
         damageAmount = damageAmount - Mathf.RoundToInt(damageAmount * resistance);
@@ -295,10 +295,9 @@ public class GameOrganizer : MonoBehaviour
                     target.LoseHealth(target.unitAttributes.unitName, damageAmount);
                 }
 
-                if (!target.unitStatusEffects.Contains(statusEffectDB.effects["Future Sight"]))
-                {
-                    target.AddStatus(statusEffectDB.effects["Future Sight"].DeepCopy());
-                }
+                
+                target.AddStatus(statusEffectDB.effects["Future Sight"].DeepCopy());
+                
                 
             }
         }
@@ -318,11 +317,6 @@ public class GameOrganizer : MonoBehaviour
                 AttackToTarget(attack, damageAmount, healAmount, unit);
             }
         }
-        /*
-        AttackToTarget(attack, damageAmount, healAmount, enemyB);
-        AttackToTarget(attack, damageAmount, healAmount, playerA);
-        AttackToTarget(attack, damageAmount, healAmount, playerB);
-        */
     }
 
     public void Target_Enemies(Attack attack, int damageAmount, int healAmount)
@@ -334,10 +328,6 @@ public class GameOrganizer : MonoBehaviour
                 AttackToTarget(attack, damageAmount, healAmount, unit);
             }
         }
-        /*
-        AttackToTarget(attack, damageAmount, healAmount, enemyA);
-        AttackToTarget(attack, damageAmount, healAmount, enemyB);
-        */
     }
 
     public void Target_Players(Attack attack, int damageAmount, int healAmount)
@@ -349,17 +339,13 @@ public class GameOrganizer : MonoBehaviour
                 AttackToTarget(attack, damageAmount, healAmount, unit);
             }
         }
-        /*
-        AttackToTarget(attack, damageAmount, healAmount, playerA);
-        AttackToTarget(attack, damageAmount, healAmount, playerB);
-        */
     }
 
     private void CheckUnitStatusEffects()
     {
         foreach (Unit unit in combatants)
         {
-            // Create a temporary set to hold effects to remove
+            //Create a temporary set to hold effects to remove
             HashSet<StatusEffect> effectsToRemove = new HashSet<StatusEffect>();
 
             foreach (StatusEffect status in unit.unitStatusEffects)
@@ -372,7 +358,7 @@ public class GameOrganizer : MonoBehaviour
                 }
             }
 
-            // Remove the expired effects from the main set
+            //Remove the expired effects from the main set
             unit.unitStatusEffects.ExceptWith(effectsToRemove);
         }
     }
